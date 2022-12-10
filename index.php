@@ -9,7 +9,7 @@ if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
 {
     header("HTTP/1.1 404 Not Found");
     exit(); 
-}else if ($uri[$indx+2] == 'rss')
+}/*else if ($uri[$indx+2] == 'rss')
 {
     if ($uri[$indx + 3] != 'sentiment')
     {
@@ -35,6 +35,7 @@ if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
     $objFeedController->{$strMethodName}();
 }
 else
+*/
 if ((isset($uri[$indx+2]) && $uri[$indx+2] != 'user') || !isset($uri[$indx+3])) {
     header("HTTP/1.1 404 Not Found");
     exit();
