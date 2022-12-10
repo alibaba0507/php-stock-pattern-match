@@ -195,7 +195,7 @@ class StockChartPatterns {
       $bin = implode("", $grid);
       $bin = trim($bin,'0');
       //echo "-------[".$bin."]---------\n";
-      return bindec($bin);
+      return $bin;//bindec($bin);
       /*foreach ($grid as $data) {
          $old_sum = $sum;
          $operator = (($counter % 2) === 0)?"-":"+";

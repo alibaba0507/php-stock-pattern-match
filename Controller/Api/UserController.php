@@ -1,5 +1,5 @@
 <?php
-
+namespace api\Controller;
 use api\Controller\BaseController;
 class UserController extends BaseController
 {
