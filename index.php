@@ -1,6 +1,11 @@
 <?php
 
 require __DIR__ . "/inc/bootstrap.php";
+use api\Controller;
+use api\Controller\PatternsController;
+
+require_once PROJECT_ROOT_PATH . "/Controller/Api/PatternsController.php";
+
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode( '/', $uri );
 //print_r($uri);
@@ -21,7 +26,8 @@ if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
     $objFeedController = new RssController();
     $strMethodName = $uri[$indx+3] . 'Action';
     $objFeedController->{$strMethodName}();
-}else if ($uri[$indx+2] == 'patterns')
+}*/
+else if ($uri[$indx+2] == 'patterns')
 {
   //  echo "=----ddddd----------\n";
     if ($uri[$indx + 3] != 'find'&& $uri[$indx + 3] != 'model')
@@ -34,9 +40,8 @@ if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
     $objFeedController = new PatternsController();
     $strMethodName = $uri[$indx+3] . 'Action';
     $objFeedController->{$strMethodName}();
-}
+}/*
 else
-*/
 if ((isset($uri[$indx+2]) && $uri[$indx+2] != 'user') || !isset($uri[$indx+3])) {
     header("HTTP/1.1 404 Not Found");
     exit();

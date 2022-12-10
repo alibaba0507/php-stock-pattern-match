@@ -1,4 +1,6 @@
 <?php
+
+use api\Controller\BaseController;
 class UserController extends BaseController
 {
     

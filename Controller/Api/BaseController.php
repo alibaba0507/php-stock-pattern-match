@@ -1,5 +1,5 @@
 <?php
-namespace api\Cpntroller;
+namespace api\Controller;
 class BaseController
 {
     /**
