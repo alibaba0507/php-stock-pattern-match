@@ -49,6 +49,7 @@ class PatternsController extends BaseController
         $this->columnData = array_column($this->data,(int)($this->col_no));
        
     }
+
     public function findAction()
     {
         $this->readCsvFile();
@@ -71,7 +72,7 @@ class PatternsController extends BaseController
         print_r($model->grid);
         //echo "----[".intval($model->filter)."] ---[".intval($model->min_range)."]-----\n";
         //for ($i = ($this->startIndex + $this->len);$i < (count($this->columnData)-($this->len));$i++)
-        for ($i = ($this->startIndex);$i < (($this->startIndex) + ($this->len));$i++)
+        for ($i = ($this->startIndex);$i < (($this->startIndex) + ($this->len))+1;$i++)
         {
             $grid = $this->$charts->createGrid($i,intval($model->filter),intval($model->filter),intval($model->min_range));
            // echo "---------before break--------[".$i."]-------------------------\n";
@@ -84,7 +85,7 @@ class PatternsController extends BaseController
             if ($model->grid[$patternIndex] == $grid && $patternIndex == 0)
             {
                 $startPatternIndex = $i;
-                $i += intval($model->filter) - 1;
+                //$i += intval($model->filter) - 1;
             }else
             if ($model->grid[$patternIndex] != $grid
                 && $model->grid[$patternIndex+1] != $grid
@@ -95,13 +96,13 @@ class PatternsController extends BaseController
                 }else if ($model->grid[$patternIndex+1] == $grid)
                 {
                    $patternIndex++;
-                   $i += intval($model->filter) - 1;
+                  // $i += intval($model->filter) - 1;
                 }
                 if ($model->grid[$patternIndex] != $grid
                 && $model->grid[$patternIndex+1] != $grid
                 && (count($model->grid)-1) <= $patternIndex )
                 {
-                    $i -= intval($model->filter)-1;
+                    //$i -= intval($model->filter)-1;
                    $found[] = [$startPatternIndex,$i - $startPatternIndex];
                 }
 
