@@ -58,15 +58,25 @@ class StockChartPatterns {
         $grid = array_fill(0,($rows**2),0);
         if (!is_array($this->dataset)|| count($this->dataset)==0)
          return $grid;
-        
+        if (($startIndex + $len) >= count($this->dataset))
+          return [];
         // slice array to find max and min values , that will be top and bottom rows
         $arr = array_slice($this->dataset,$startIndex,$len);
+        if (count($arr) == 0)
+          return [];
        // echo "-------- dataset[".count($arr)."][".$startIndex."]------------------\n";
         //print_r($arr);
         $max = max($arr);
         $min = min($arr);
         $minRange = max(($max-$min),$minRange);
         $d_row = (($minRange/(int)$rows)); // calc column unit
+        if ($d_row <= 0)
+        {
+          // echo "-----Start[".$startIndex."] len[".$len."]-----\n";
+           //print_r($arr);
+           // nothing to do here the values are the same
+           return $grid;
+        }
         $d_col = ((count($arr)/(int)$rows)); // calc row unit
         //echo "-------- min[".$min."]max[".$max."]COL[".$d_col."]ROW[".$d_row."]------------------\n";
         for ($i = 0;$i < count($arr);$i++)

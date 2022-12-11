@@ -66,32 +66,42 @@ class PatternsController extends BaseController
         $patternIndex = 0;
         $startPatternIndex = 0;
         $found = [];
+        //print_r($model);
         $this->$charts = new StockChartPatterns($this->columnData);
-        for ($i = ($this->startIndex + $this->len);$i < (count($this->columnData)-($this->len));$i++)
+        print_r($model->grid);
+        //echo "----[".intval($model->filter)."] ---[".intval($model->min_range)."]-----\n";
+        //for ($i = ($this->startIndex + $this->len);$i < (count($this->columnData)-($this->len));$i++)
+        for ($i = ($this->startIndex);$i < (($this->startIndex) + ($this->len));$i++)
         {
-            $grid = $this->$charts->createGrid($i,intval($model["filter"]),intval($model["filter"]),intval($model["min_range"]));
+            $grid = $this->$charts->createGrid($i,intval($model->filter),intval($model->filter),intval($model->min_range));
+           // echo "---------before break--------[".$i."]-------------------------\n";
+            //print_r($grid);
+            if (count($grid) == 0)
+                break;
             $grid = $this->$charts->arraySumEven($grid);
-            if ($model['grid'][$patternIndex] == $grid && $patternIndex == 0)
+            echo "-----------------[".$i."]-------------------------<br/>";
+            print_r($grid);
+            if ($model->grid[$patternIndex] == $grid && $patternIndex == 0)
             {
                 $startPatternIndex = $i;
-                $i += intval($model["filter"]) - 1;
-            }
-            if ($model['grid'][$patternIndex] != $grid
-                && $model['grid'][$patternIndex+1] != $grid
-                && (count($model['grid'])-1) > $patternIndex)
+                $i += intval($model->filter) - 1;
+            }else
+            if ($model->grid[$patternIndex] != $grid
+                && $model->grid[$patternIndex+1] != $grid
+                && (count($model->grid)-1) > $patternIndex)
                 {
                     $patternIndex = 0;
                     $startPatternIndex = 0;
-                }else if ($model['grid'][$patternIndex+1] == $grid)
+                }else if ($model->grid[$patternIndex+1] == $grid)
                 {
                    $patternIndex++;
-                   $i += intval($model["filter"]) - 1;
+                   $i += intval($model->filter) - 1;
                 }
-                if ($model['grid'][$patternIndex] != $grid
-                && $model['grid'][$patternIndex+1] != $grid
-                && (count($model['grid'])-1) <= $patternIndex )
+                if ($model->grid[$patternIndex] != $grid
+                && $model->grid[$patternIndex+1] != $grid
+                && (count($model->grid)-1) <= $patternIndex )
                 {
-                    $i -= intval($model["filter"])-1;
+                    $i -= intval($model->filter)-1;
                    $found[] = [$startPatternIndex,$i - $startPatternIndex];
                 }
 

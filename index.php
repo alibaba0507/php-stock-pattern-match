@@ -9,7 +9,7 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode( '/', $uri );
 //print_r($uri);
 $indx = array_search("index.php", $uri)-1;
-echo '----- indx['.$indx.']-------\n';
+//echo '----- indx['.$indx.']-------\n';
 if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
 {
    // echo "-----------------------------------";
