@@ -9,9 +9,10 @@ $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode( '/', $uri );
 //print_r($uri);
 $indx = array_search("index.php", $uri)-1;
-//echo '----- indx['.$indx.']-------\n';
+echo '----- indx['.$indx.']-------\n';
 if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
 {
+   // echo "-----------------------------------";
     header("HTTP/1.1 404 Not Found");
     exit(); 
 }/*else if ($uri[$indx+2] == 'rss')
@@ -26,7 +27,7 @@ if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
     $strMethodName = $uri[$indx+3] . 'Action';
     $objFeedController->{$strMethodName}();
 }*/
-else if ($uri[$indx+2] == 'patterns')
+else if ($uri[$indx+2] == 'patterns' )
 {
   //  echo "=----ddddd----------\n";
     if ($uri[$indx + 3] != 'find'&& $uri[$indx + 3] != 'model')

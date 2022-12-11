@@ -49,7 +49,7 @@ class PatternsController extends BaseController
         $this->columnData = array_column($this->data,(int)($this->col_no));
        
     }
-    public function findPatternsAction()
+    public function findAction()
     {
         $this->readCsvFile();
         $arrQueryStringParams = $this->getQueryStringParams();
@@ -66,7 +66,8 @@ class PatternsController extends BaseController
         $patternIndex = 0;
         $startPatternIndex = 0;
         $found = [];
-        for ($i = ($this->startIndex + $this->len);$i < count($this->columnData)-($this->len);$i++)
+        $this->$charts = new StockChartPatterns($this->columnData);
+        for ($i = ($this->startIndex + $this->len);$i < (count($this->columnData)-($this->len));$i++)
         {
             $grid = $this->$charts->createGrid($i,intval($model["filter"]),intval($model["filter"]),intval($model["min_range"]));
             $grid = $this->$charts->arraySumEven($grid);
@@ -95,6 +96,11 @@ class PatternsController extends BaseController
                 }
 
         }// end for
+        $encr = json_encode($found);//$encrModel->encrpt(json_encode($ret));
+        $this->sendOutput(
+            $encr,
+            array('Content-Type: application/json', 'HTTP/1.1 200 OK')
+        );
     }
     public function modelAction()
     {
