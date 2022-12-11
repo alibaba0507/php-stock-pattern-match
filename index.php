@@ -4,7 +4,6 @@ require __DIR__ . "/inc/bootstrap.php";
 use api\Controller;
 use api\Controller\PatternsController;
 
-require_once PROJECT_ROOT_PATH . "/Controller/Api/PatternsController.php";
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = explode( '/', $uri );
@@ -36,7 +35,7 @@ else if ($uri[$indx+2] == 'patterns')
         exit();  
     }
    // echo "=--------wwww------\n";
-    require PROJECT_ROOT_PATH . "/Controller/Api/PatternsController.php";
+   require_once PROJECT_ROOT_PATH . "/Controller/Api/PatternsController.php";
     $objFeedController = new PatternsController();
     $strMethodName = $uri[$indx+3] . 'Action';
     $objFeedController->{$strMethodName}();
@@ -52,4 +51,5 @@ if ((isset($uri[$indx+2]) && $uri[$indx+2] != 'user') || !isset($uri[$indx+3])) 
     $strMethodName = $uri[3] . 'Action';
     $objFeedController->{$strMethodName}();
 }
+*/
 ?>

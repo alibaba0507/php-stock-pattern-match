@@ -28,6 +28,32 @@ class StockChartPatterns {
        }
        return $model;
     }
+    function arraySumEven(array $grid)
+    {
+      $counter = 1;
+      $sum = 0.0;
+      $operator = "";
+      $old_sum = 0;
+      $bin = implode("", $grid);
+      // Initialize the result variable
+      $result = 0;
+      /*
+      // Use a loop to iterate over the elements in the array
+      for ($i = 0; $i < count($grid); $i+=2) {
+          // Check if the current position is even or odd
+          if ($i % 2 == 0) {
+              // If the position is even, add the element to the result
+            $result += bindec($grid[$i].$grid[$i+1]/*.$grid[$i+2]* /);
+          } else {
+              // If the position is odd, subtract the element from the result
+            $result -= bindec($grid[$i].$grid[$i+1]/*.$grid[$i+2]* /);
+          }
+      }
+      echo "-------[".$bin."][".$result."]---------\n";
+      */
+      return $bin;//bindec($bin); 
+      
+    } 
     public function createGrid($startIndex,$len,$rows,$minRange = 0){
         $grid = array_fill(0,($rows**2),0);
         if (!is_array($this->dataset)|| count($this->dataset)==0)
@@ -58,6 +84,7 @@ class StockChartPatterns {
       //  echo "------------------ End -----------------\n";
         return $grid;
     }
+   
     function createModelGrid($start,$len,$rows)
     {
         $grid = array_fill(0,((int)$rows*(int)$rows),0);
@@ -186,36 +213,7 @@ class StockChartPatterns {
         }
         return ($sum / ($this->filters**2));
     }
-    function arraySumEven(array $grid)
-    {
-      $counter = 1;
-      $sum = 0.0;
-      $operator = "";
-      $old_sum = 0;
-      $bin = implode("", $grid);
-      $bin = trim($bin,'0');
-      //echo "-------[".$bin."]---------\n";
-      return $bin;//bindec($bin);
-      /*foreach ($grid as $data) {
-         $old_sum = $sum;
-         $operator = (($counter % 2) === 0)?"-":"+";
-         $d = ($sum xor $data)?1:0;
-         //if (($counter % 2) === 0)
-         //  $sum -= $data;
-         // else
-         // {
-          //  echo '---------------SUM['.$sum."]------[".$data."]----\n";
-            $sum += ($d);
-          //  echo '---------------SUM['.$sum."]-[".$data."]----\n";
-         // }
-         // echo "-------[".$old_sum."][".$operator."][".$data."] = [".$sum."]-------\n";
-          $counter++;
-      }// end for
-      print_r($grid);
-      echo '---------------SUM['.$sum."]----\n";
-      return $sum;
-      */
-    } 
+    
     function applyFilters(array $grid,$rows,$step = 1)
     {
       $reduce_grid = [];

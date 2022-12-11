@@ -1,11 +1,11 @@
 <?php
 namespace api\Controller;
 
-include(PROJECT_ROOT_PATH."Utils/CsvUtils.class.php");
-include(PROJECT_ROOT_PATH."Utils/stock_chart_pattern.class.php");
-include(PROJECT_ROOT_PATH."Utils/Chartdata.class.php");
-include(PROJECT_ROOT_PATH."Utils/Statistics.php");
-include(PROJECT_ROOT_PATH."Utils/pattern_encrypt_decrypt.php");
+require_once(PROJECT_ROOT_PATH."Utils/CsvUtils.class.php");
+require_once(PROJECT_ROOT_PATH."Utils/stock_chart_pattern.class.php");
+require_once(PROJECT_ROOT_PATH."Utils/Chartdata.class.php");
+require_once(PROJECT_ROOT_PATH."Utils/Statistics.php");
+require_once(PROJECT_ROOT_PATH."Utils/pattern_encrypt_decrypt.php");
 use Patterns\StockChartPatterns;
 use Patterns\Chart;
 use Utils\CsvUtils;
