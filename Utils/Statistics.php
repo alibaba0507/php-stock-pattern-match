@@ -3,7 +3,27 @@
 namespace Patterns;
 
 class Statistics {
+     public function removeDuplicateNeighborsFromArray(array $array)
+	 {
+				// Initialize a variable to track the current element
+		$currentElement = null;
 
+		// Loop through the elements of the array
+		foreach ($array as $key => $value) {
+			// Check if the current element is the same as the previous element
+			if ($value == $currentElement) {
+				// If the elements are the same, remove the current element from the array
+				unset($array[$key]);
+			} else {
+				// If the elements are not the same, update the current element
+				$currentElement = $value;
+			}
+		}
+
+		// Reindex the array
+		$array = array_values($array);
+		return $array;
+	 }
 	/**
 	 * Returns slop and intercept of simple linear regression
 	 * Reference: https://www.easycalculation.com/statistics/learn-regression.php

@@ -24,7 +24,7 @@ class StockChartPatterns {
         // echo "--------------------------\n";
         // print_r($grid);
          //echo "---------[".$this->arraySumEven($grid)."]------------------\n";
-         $model[] = $this->arraySumEven($grid);
+         $model[] = $grid;//$this->arraySumEven($grid);
        }
        return $model;
     }
@@ -89,6 +89,17 @@ class StockChartPatterns {
           //  echo "--------------- C[".$col."][".(($i+1)%$rows)."]----------------------------------------------\n";
             $cell = (($row*$rows))-$col;
             $grid[$cell-1] = 1;
+            $row_1 = ($row - 1) > 0?$row - 1:0;
+            if ($row_1 > 0 && $grid[(($row_1*$rows)-$col)-1] != 1)
+              $grid[(($row_1*$rows)-$col)-1] = 0.5;
+            $row_1 = ($row + 1) < $rows?$row +  1:0;
+            if ($row_1 > 0 && $grid[(($row_1*$rows)-$col)-1] != 1)
+              $grid[(($row_1*$rows)-$col)-1] = 0.5;
+           // if ($col - 1 > 0)
+           //   $grid[(($row*$rows)-($col-1))-1] = 0.25;
+            //if ($col + 1 <= $rows)
+            //  $grid[(($row*$rows)-$col+1)-1] = 0.25;
+
           //  echo "----------------- Cell[".($cell-1)."]---------------\n";
         }// end for
       //  echo "------------------ End -----------------\n";

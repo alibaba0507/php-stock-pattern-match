@@ -65,53 +65,69 @@ class PatternsController extends BaseController
         }
         $model = json_decode($model_str);
         $patternIndex = 0;
-        $startPatternIndex = 0;
+        $startPatternIndex = -1;
         $found = [];
         //print_r($model);
+        $stats = new Statistics();
         $this->$charts = new StockChartPatterns($this->columnData);
-        print_r($model->grid);
+        //print_r($model->grid);
         //echo "----[".intval($model->filter)."] ---[".intval($model->min_range)."]-----\n";
         //for ($i = ($this->startIndex + $this->len);$i < (count($this->columnData)-($this->len));$i++)
-        for ($i = ($this->startIndex);$i < (($this->startIndex) + ($this->len))+1;$i++)
+        //$tmp = $model->grid;
+        $tmp = $model->grid;//$stats->removeDuplicateNeighborsFromArray($model->grid);
+        //print_r($tmp);
+        $start = false;
+        for ($i = ($this->startIndex);$i <  (count($this->columnData) - intval($model->filter));$i++)
         {
             $grid = $this->$charts->createGrid($i,intval($model->filter),intval($model->filter),intval($model->min_range));
-           // echo "---------before break--------[".$i."]-------------------------\n";
-            //print_r($grid);
-            if (count($grid) == 0)
-                break;
             $grid = $this->$charts->arraySumEven($grid);
-            echo "-----------------[".$i."]-------------------------<br/>";
-            print_r($grid);
-            if ($model->grid[$patternIndex] == $grid && $patternIndex == 0)
+            //echo "----COMPARE [".$grid."][".$tmp[0]."]--------------------\n";
+            if ($tmp[0] == $grid )
+            { // start
+                   if ($startPatternIndex < 0 && count($tmp) == count($model->grid))
+                        $startPatternIndex = $i;
+                   array_shift($tmp);
+            }else if ($tmp[0] != $grid && $startPatternIndex != -1 && count($tmp) > 0)
+            { // fail
+                //echo "--------- Fail[".$tmp[0]."] - [".$grid."][".$i."]--------\n";
+                //print_r($tmp);
+                $startPatternIndex = -1;
+                $tmp = $model->grid;
+            }
+            if (count($tmp) == 0 && $startPatternIndex != -1)
             {
-                $startPatternIndex = $i;
-                //$i += intval($model->filter) - 1;
-            }else
-            if ($model->grid[$patternIndex] != $grid
-                && $model->grid[$patternIndex+1] != $grid
-                && (count($model->grid)-1) > $patternIndex)
-                {
-                    $patternIndex = 0;
-                    $startPatternIndex = 0;
-                }else if ($model->grid[$patternIndex+1] == $grid)
-                {
-                   $patternIndex++;
-                  // $i += intval($model->filter) - 1;
-                }
-                if ($model->grid[$patternIndex] != $grid
-                && $model->grid[$patternIndex+1] != $grid
-                && (count($model->grid)-1) <= $patternIndex )
-                {
-                    //$i -= intval($model->filter)-1;
-                   $found[] = [$startPatternIndex,$i - $startPatternIndex];
-                }
+                $found[] = [intval( $startPatternIndex),($i - $startPatternIndex)+1];
+                $startPatternIndex = -1;
+                $tmp = $model->grid;
+            }
 
         }// end for
-        $encr = json_encode($found);//$encrModel->encrpt(json_encode($ret));
+        if ($startPatternIndex > -1 && count($tmp) == 0)
+        {
+            //echo "----------- Left Over -------\n";
+            $found[] = [$startPatternIndex,($i - $startPatternIndex)+1];
+        }
+        if (count($found)> 0)
+        {
+            $this->chart = new Chart();
+            $arr = array_slice($this->columnData,$this->startIndex,$this->len);
+            $ret = $this->chart->drawChart($arr,350,450,20,/*$this->gridRows*/10);
+            $src = 'data:image/png;base64,'.$ret;
+            echo '<img src="'.$src.'">'; 
+            $cnt = (count($found) < 3)?count($found):3;
+            for ($i = 0;$i < $cnt;$i++)
+            {
+                $arr = array_slice($this->columnData,$found[$i][0],$this->len);
+                $ret = $this->chart->drawChart($arr,350,450,20,/*$this->gridRows*/10);
+                $src = 'data:image/png;base64,'.$ret;
+                echo '<img src="'.$src.'">'; 
+            }
+        }
+        /*$encr = json_encode($found);//$encrModel->encrpt(json_encode($ret));
         $this->sendOutput(
             $encr,
             array('Content-Type: application/json', 'HTTP/1.1 200 OK')
-        );
+        );*/
     }
     public function modelAction()
     {
@@ -136,9 +152,24 @@ class PatternsController extends BaseController
         $stat->moving_average($this->columnData,$ma,$ma_arr);
         //print_r($this->columnData );
         $this->$charts = new StockChartPatterns($ma_arr);
-        $grid = $this->$charts->constractModel($this->startIndex,$this->len,$filter,$range);
+       // $grid = $this->$charts->constractModel($this->startIndex,$this->len,$filter,$range);
+          $grid = [$this->$charts->createGrid($this->startIndex,$this->len,$filter,$range)];
         //print_r($grid);
-        
+        for ($i  =0;$i < count($grid);$i++)
+        {
+            $g = $grid[$i];
+            echo "===========================================================================\n";
+            for ($j =0;$j < count($g);$j++)
+            {
+                $s .= $g[$j].",";
+                if ((($j+1)%$filter) == 0)
+                {    
+                    echo "-----[".$s."]----------\n";
+                    $s = "";
+                }
+            }
+            echo "===========================================================================\n";
+        }
         //$grid = $this->$charts->createModelGrid($startIndx,$this->len,$this->gridRows);
         $ret["col_no"] = $this->col_no;
         $ret["strt_indx"] = $this->startIndex;
