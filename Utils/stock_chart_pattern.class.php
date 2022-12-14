@@ -66,8 +66,28 @@ class StockChartPatterns {
           return [];
        // echo "-------- dataset[".count($arr)."][".$startIndex."]------------------\n";
         //print_r($arr);
-        $max = max($arr);
-        $min = min($arr);
+        $max = 0;
+        $min = 0;
+        if (is_array($arr[0]))
+        {
+          foreach ($arr as $k)
+          {
+            $m = min($k);
+            $mx = max($k);
+            $max = ($max == 0 || $max < $mx)?$mx:$max;
+            $min = ($min == 0 || $min > $m)?$m:$min;
+
+          }
+          //$min = $minMaxValues[0];
+          //$max = $minMaxValues[1];
+          //echo "=-------Max[".$max."][".$min."]---------------\n";
+          //print_r($minMaxValues);
+        }else
+        {
+          $max = max($arr);
+          $min = min($arr);
+        }
+        //print_r($max);
         $minRange = max(($max-$min),$minRange);
         $d_row = (($minRange/(int)$rows)); // calc column unit
         if ($d_row <= 0)
@@ -78,27 +98,41 @@ class StockChartPatterns {
            return $grid;
         }
         $d_col = ((count($arr)/(int)$rows)); // calc row unit
+        //print_r($arr);
         //echo "-------- min[".$min."]max[".$max."]COL[".$d_col."]ROW[".$d_row."]------------------\n";
         for ($i = 0;$i < count($arr);$i++)
         { // fill the grid with 1 and 0
-            $row = ($minRange - ($max - $arr[$i]))/$d_row; // will give as real col
-            $row = (round($row) == 0)?1:round($row);
-            //$col += 1; // $i zero based
-          //  echo "--------------- R[".$row."][".($max - $arr[$i])."][".$arr[$i]."]------------\n";
-            $col = (($i+1)%$rows);//((($i+1)%$rows) != 0)?(($i+1)%$rows):$rows;
-          //  echo "--------------- C[".$col."][".(($i+1)%$rows)."]----------------------------------------------\n";
-            $cell = (($row*$rows))-$col;
-            $grid[$cell-1] = 1;
-            $row_1 = ($row - 1) > 0?$row - 1:0;
-            if ($row_1 > 0 && $grid[(($row_1*$rows)-$col)-1] != 1)
-              $grid[(($row_1*$rows)-$col)-1] = 0.5;
-            $row_1 = ($row + 1) < $rows?$row +  1:0;
-            if ($row_1 > 0 && $grid[(($row_1*$rows)-$col)-1] != 1)
-              $grid[(($row_1*$rows)-$col)-1] = 0.5;
-           // if ($col - 1 > 0)
-           //   $grid[(($row*$rows)-($col-1))-1] = 0.25;
-            //if ($col + 1 <= $rows)
-            //  $grid[(($row*$rows)-$col+1)-1] = 0.25;
+          $col = (($i+1)%$rows);  
+          if (is_array($arr[$i]))
+            {
+              //echo "----------------------------------\n";
+             // print_r($arr[$i]);
+             // echo "----------------------------------\n";
+              for ($j = 0;$j < count($arr[$i]);$j++)
+              {
+                $row = ($minRange - ($max - $arr[$i][$j]))/$d_row; // will give as real col
+                $row = (round($row) == 0)?1:round($row);
+                $cell = (($row*$rows))-$col;
+                $grid[$cell-1] = 1;
+                
+              }
+            }else
+            {
+              $row = ($minRange - ($max - $arr[$i]))/$d_row; // will give as real col
+              $row = (round($row) == 0)?1:round($row);
+              $cell = (($row*$rows))-$col;
+              $grid[$cell-1] = 1;
+            }
+            //$row_1 = ($row - 1) > 0?$row - 1:0;
+           // if ($row_1 > 0 && $grid[(($row_1*$rows)-$col)-1] != 1)
+           //   $grid[(($row_1*$rows)-$col)-1] = 0.5;
+          //  $row_1 = ($row + 1) < $rows?$row +  1:0;
+          //  if ($row_1 > 0 && $grid[(($row_1*$rows)-$col)-1] != 1)
+          //    $grid[(($row_1*$rows)-$col)-1] = 0.5;
+          //  if (($col - 1) > 0 && $grid[(($row*$rows)-($col-1))-1] <= 0)
+          //    $grid[(($row*$rows)-($col-1))-1] = 0.25;
+           // if ($col + 1 <= ($rows-1) && $grid[(($row*$rows)-$col+1)-1] <= 0)
+           //   $grid[(($row*$rows)-$col+1)-1] = 0.25;
 
           //  echo "----------------- Cell[".($cell-1)."]---------------\n";
         }// end for

@@ -30,11 +30,11 @@ if ((!isset($uri[$indx+2]) || !isset($uri[$indx + 3])))
 else if ($uri[$indx+2] == 'patterns' )
 {
   //  echo "=----ddddd----------\n";
-    if ($uri[$indx + 3] != 'find'&& $uri[$indx + 3] != 'model')
-    {
-        header("HTTP/1.1 404 Not Found");
-        exit();  
-    }
+    //if ($uri[$indx + 3] != 'find'&& $uri[$indx + 3] != 'model')
+    //{
+    //    header("HTTP/1.1 404 Not Found");
+    //    exit();  
+   // }
    // echo "=--------wwww------\n";
    require_once PROJECT_ROOT_PATH . "/Controller/Api/PatternsController.php";
     $objFeedController = new PatternsController();

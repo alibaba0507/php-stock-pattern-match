@@ -14,6 +14,11 @@ use Patterns\PatternCryptModel;
 
 class PatternsController extends BaseController
 {
+    public function readAction(){
+        //echo "--------------------- Read ------------\n";
+        $this->readCsvFile();
+        print_r($this->columnData);
+    }
     public function readCsvFile()
     {
         $strErrorDesc = '';
@@ -34,9 +39,12 @@ class PatternsController extends BaseController
         $reverse_read = (isset($arrQueryStringParams['reverse_read'])? true:false);
         $header = (isset($arrQueryStringParams['header'])? true : false);
         //$ma = (!isset($_GET['ma']))?21:trim($_GET["ma"],"\"'");
+        $selected_fields = (isset($arrQueryStringParams['fields'])?explode(',',$arrQueryStringParams['fields']):[]);
+        //print_r($selected_fields);
+        //return;
         $url = trim($arrQueryStringParams["s"],"\"'");
         $this->$scv = new CsvUtils();
-        $this->data = $this->$scv->google_sheet_read_csv($url,-1,$header,$reverse_read);
+        $this->data = $this->$scv->google_sheet_read_csv($url,-1,$header,$reverse_read,$selected_fields);
         if ( $this->data &&  $this->data["err"])
         {
            $strErrorDesc =  $this->data;
@@ -46,7 +54,7 @@ class PatternsController extends BaseController
             );
         }
        // echo "---------------------------[".($this->col_no)."]---------\n";
-        $this->columnData = array_column($this->data,(int)($this->col_no));
+        $this->columnData = count($selected_fields) > 0? $this->data : array_column($this->data,(int)($this->col_no));
        
     }
 
@@ -149,12 +157,12 @@ class PatternsController extends BaseController
         $ma = (!isset($_GET['ma']))?21:trim($_GET["ma"],"\"'");
         $ma_arr = [];
         $stat = new Statistics();
-        $stat->moving_average($this->columnData,$ma,$ma_arr);
+        //$stat->moving_average($this->columnData,$ma,$ma_arr);
         //print_r($this->columnData );
-        $this->$charts = new StockChartPatterns($ma_arr);
+        $this->$charts = new StockChartPatterns(/*$ma_arr*/$this->columnData );
        // $grid = $this->$charts->constractModel($this->startIndex,$this->len,$filter,$range);
-          $grid = [$this->$charts->createGrid($this->startIndex,$this->len,$filter,$range)];
-        //print_r($grid);
+        $grid = [$this->$charts->createGrid($this->startIndex,$this->len,$filter,$range)];
+       // print_r($grid);
         for ($i  =0;$i < count($grid);$i++)
         {
             $g = $grid[$i];
