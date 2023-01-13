@@ -14,6 +14,72 @@ use Patterns\PatternCryptModel;
 
 class PatternsController extends BaseController
 {
+    public function readTickDataAction()
+    {
+        $strErrorDesc = '';
+        $requestMethod = $_SERVER["REQUEST_METHOD"];
+        $arrQueryStringParams = $this->getQueryStringParams();
+        if (strtoupper($requestMethod) != 'GET' 
+          || !isset($arrQueryStringParams['currency']) || 
+             trim($arrQueryStringParams['currency']) == "") { 
+            $strErrorDesc = 'Invalid Request ... Nothing to serve ....';
+            $strErrorHeader = 'HTTP/1.1 422 Unprocessable Entity';
+            $this->sendOutput(json_encode(array('error' => $strErrorDesc)), 
+            array('Content-Type: application/json', $strErrorHeader)
+            );
+        }
+     
+        $url = "https://fxmarketapi.com/apitimeseries?";
+        $api = "api_key=daGQkxXmNab2vW1zh6U2";
+        $currency = "currency=".$arrQueryStringParams['currency'];
+        $start_date = "start_date=".$arrQueryStringParams['start_date'];
+        $end_date = "end_date=".$arrQueryStringParams['end_date'];
+        $format = "format=".$arrQueryStringParams['format'];//ohlc";
+        $url .= $api."&".$currency."&".$start_date."&".$end_date."&".$fromat;
+        $curl = curl_init();
+
+        curl_setopt_array( $curl, array(
+        CURLOPT_PORT => "443",
+        CURLOPT_URL => $url/*"https://fxmarketapi.com/apilive?currency=USDJPY,AUDUSD,GBPUSD,EURUSD&api_key=api_key"*/,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+        echo "cURL Error #:" . $err;
+        } else {
+         $response = json_decode($response);
+         $response = $response->price;
+         $pairs_arr = [];
+         foreach($response as $dt)
+         {
+            foreach($dt as $pairs=>$values)
+            {
+            //  echo '-------['.$pairs.']----------------\n';  
+              if (!$pairs_arr[$pairs])
+               $pairs_arr[$pairs] = [];
+              $s = [];
+              foreach($values as $pair)
+              {
+                //echo "-----------------[".$pair."]-----------\n";
+                $s[] = $pair;
+              }
+              $pairs_arr[$pairs][] = $s;
+            }
+         }
+         print_r($pairs_arr);
+         //echo $response;
+        }       
+    }
     public function readAction(){
         //echo "--------------------- Read ------------\n";
         $this->readCsvFile();

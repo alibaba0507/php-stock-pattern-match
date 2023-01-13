@@ -3,6 +3,56 @@
 namespace Patterns;
 
 class Statistics {
+
+	/**
+	 * Creates grid model to be compared with
+	 * @param array $dataset 2D array , second dimention is a array o,h,l,c
+     * @param $startIndex - start index of the pattern
+	 * @param $len - length of pattern
+	 * @param $o - index of the open value from second dimention
+	 * @param $h - index of the high value from second dimention
+	 * @param $l - index of the low value from second dimention
+	 * @param $c - index of the close value from second dimention
+	 */
+	 public function createGridModel(array $dataset,$startIndex,$len,$rows = 10,$o = 0,$h = 1,$l = 2,$c = 3,$minRange = 0){
+		$arr = array_slice($dataset,$startIndex,$len);
+        if (count($arr) == 0)
+          return [];
+		$arr_open = array_column($dataset,(int)($o));
+		$arr_high = array_column($dataset,(int)($h));
+		$arr_low = array_column($dataset,(int)($l));
+		$arr_close = array_column($dataset,(int)($c));
+		$grid_open = array_fill(0,($rows**2),0);
+		$grid_high = array_fill(0,($rows**2),0);
+		$grid_low = array_fill(0,($rows**2),0);
+		$grid_close = array_fill(0,($rows**2),0);
+		$min = min($arr_low);
+		$max = max($arr_high);
+        $minRange = max(($max-$min),$minRange);
+		$d_row = (($minRange/(int)$rows)); // calc column unit
+		if ($d_row <= 0)
+		 return [];
+		
+		$d_col = ((count($arr)/(int)$rows)); // calc row unit
+        for ($i = 0;$i < count($arr);$i++)
+        { // fill the grid with 1 and 0
+			$col = (($i+1)%$rows); 
+			$row_open = ($minRange - ($max - $arr_open[$i]))/$d_row; // will give as real col
+			$row_open = (round($row_open) == 0)?1:round($row_open);
+			$row_high = ($minRange - ($max - $arr_high[$i]))/$d_row; // will give as real col
+			$row_high = (round($row_high) == 0)?1:round($row_high);
+			$row_low = ($minRange - ($max - $arr_low[$i]))/$d_row; // will give as real col
+			$row_low = (round($row_low) == 0)?1:round($row_low);
+			$row_close = ($minRange - ($max - $arr_close[$i]))/$d_row; // will give as real col
+			$row_close = (round($row_close) == 0)?1:round($row_close);
+			//$cell = (($row*$rows))-$col;
+			$grid_open[((($row_open*$rows))-$col)-1] = 1;
+			$grid_high[((($row_high*$rows))-$col)-1] = 1;
+			$grid_low[((($row_low*$rows))-$col)-1] = 1;
+			$grid_close[((($row_close*$rows))-$col)-1] = 1;
+		}// end for
+		return [$grid_open,$grid_high,$grid_low,$grid_close];
+	 }
      public function removeDuplicateNeighborsFromArray(array $array)
 	 {
 				// Initialize a variable to track the current element
