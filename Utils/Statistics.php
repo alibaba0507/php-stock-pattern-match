@@ -3,7 +3,7 @@
 namespace Patterns;
 
 class Statistics {
-
+	
 	/**
 	 * Creates grid model to be compared with
 	 * @param array $dataset 2D array , second dimention is a array o,h,l,c
